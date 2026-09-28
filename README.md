@@ -1,123 +1,148 @@
-# AI-Based Budget Utilization Monitoring System (MEAN Stack)
+# Government Budget Monitoring System (GBMS)
 
-Built to the attached project requirements: MongoDB + Express + Angular + Node.js,
-with role-based access control, budget/expenditure tracking, rule-based anomaly
-detection, alerting, dashboards, an admin panel, and CSV/PDF reporting.
+A full-stack Government Budget Monitoring System built using the MEAN stack to monitor department budgets, expenditures, utilization, alerts, and financial reports.
 
-## What's included
+## 🚀 Features
 
-**backend/** — Node.js + Express + MongoDB (Mongoose) REST API
-- JWT authentication, enforced on every route via middleware (not just issued and ignored)
-- Roles: `admin`, `finance_officer`, `department_head`, each with different permissions
-- Department, Budget, Expenditure, Alert, AuditLog, Threshold models
-- Rule-based anomaly detection engine (`services/anomalyDetection.js`):
-  under-utilization (low spend late in the fiscal year), overspending/deviation,
-  and spending-spike detection (a transaction far above the recent average) —
-  runs automatically after every new expenditure and hourly via a cron job
-- Admin-configurable thresholds (no hardcoded magic numbers in the UI)
-- Audit log written on every create/update/delete of financial data
-- CSV export (budgets/expenditures/alerts) and a PDF summary report
-- Supporting-document upload for expenditures (multer)
-- Seed script with realistic reference data (real Indian ministry names and
-  scheme categories — MGNREGA, PM-KISAN, Ayushman Bharat, etc. — per the brief's
-  "realistic, not randomly generated" requirement)
+- User authentication and authorization
+- Role-based access control
+- Admin Panel
+- Department management
+- Budget allocation and tracking
+- Expenditure management
+- Budget utilization monitoring
+- Financial alerts
+- CSV report generation
+- PDF summary reports
+- Dashboard analytics
+- MongoDB Atlas database
+- Responsive modern UI
 
-**frontend/** — Angular (standalone components) SPA, 8 functional pages
-1. Login
-2. Register
-3. Dashboard (summary cards, bar chart of allocated vs. spent by department,
-   pie chart of expenditure by category, recent activity, open alerts)
-4. Departments (CRUD)
-5. Budgets (CRUD, per-department allocation)
-6. Expenditures (record transactions, upload supporting documents)
-7. Alerts (view/resolve anomaly alerts, trigger detection manually)
-8. Reports (CSV/PDF export)
-9. Admin Panel (user & role management, detection threshold configuration, audit log viewer)
+## 👥 User Roles
 
-## Important — what I could and couldn't do here
+### Admin
 
-I built and wrote every file in this project, but two things are outside what I
-can do directly from this environment:
+- Manage users
+- Manage departments
+- Access reports
+- Monitor the complete system
 
-- **I cannot run `npm install`** — this sandbox has no network access, so
-  dependencies aren't downloaded/verified here. Run the install step yourself
-  (below) before starting either app.
-- **I cannot deploy this live** to AWS/Azure/Render/Vercel — that requires your
-  own hosting accounts and credentials. Instructions for a free-tier deploy
-  (Render for backend + MongoDB Atlas + Vercel/Render static for frontend) are
-  below; this satisfies the brief's "only a live deployed link should be
-  submitted" requirement once you complete it.
+### Finance Officer
 
-## Local setup
+- Manage departments
+- Create and manage budgets
+- Record expenditures
+- View reports
+- Monitor budget utilization
 
-### 1. MongoDB
-Use a local MongoDB instance or a free MongoDB Atlas cluster. Get a connection string.
+### Department Head
 
-### 2. Backend
-```bash
-cd backend
-cp .env.example .env
-# edit .env: set MONGO_URI and a real JWT_SECRET
-npm install
-npm run seed      # loads sample departments/budgets/expenditures + an admin user
-npm run dev        # starts on http://localhost:5000
+- View department-related financial information
+- Monitor budgets and expenditures
+- View alerts
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+- Angular
+- TypeScript
+- HTML5
+- CSS3
+- Chart.js
+- ng2-charts
+
+### Backend
+
+- Node.js
+- Express.js
+- REST API
+- JWT Authentication
+- bcrypt.js
+
+### Database
+
+- MongoDB
+- MongoDB Atlas
+
+## 📁 Project Structure
+
+```text
+GBMS-Mean-Stack/
+├── backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── services/
+│   └── server.js
+│
+├── frontend/
+│   ├── src/
+│   ├── angular.json
+│   └── package.json
+│
+└── README.md
 ```
 
-Seeded logins (from the seed script output):
-- Admin: `admin@gbms.gov.in` / `Admin@12345`
-- Finance Officer: `finance.officer@gbms.gov.in` / `Officer@123`
-- Department Head: `head.mohfw@gbms.gov.in` / `DeptHead@123` (also `head.moe@`, `head.mord@`, `head.morth@`, `head.moafw@`)
+⚙️ Installation
 
-**Change these passwords before any real deployment.**
+1. Clone the repository
+   git clone https://github.com/PDubey-tech26/GBMS-Mean-Stack.git
+   cd GBMS-Mean-Stack
+2. Backend setup
+   cd backend
+   npm install
 
-### 3. Frontend
-```bash
+Create a .env file:
+
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+
+Start backend:
+
+npm run dev
+
+Backend runs on:
+
+http://localhost:5000 3. Frontend setup
+
+Open another terminal:
+
 cd frontend
 npm install
-# edit src/environments.ts if your backend isn't on localhost:5000
-npm start           # starts on http://localhost:4200
-```
+npm start
 
-## Deploying it live (to satisfy "only a live deployed link should be submitted")
+Frontend runs on:
 
-1. **Database**: create a free MongoDB Atlas cluster, whitelist all IPs (0.0.0.0/0)
-   for simplicity, get the connection string.
-2. **Backend**: push `backend/` to its own GitHub repo, deploy to Render
-   (or Railway/Fly.io) as a Node web service. Set environment variables
-   (`MONGO_URI`, `JWT_SECRET`, `CORS_ORIGIN` = your frontend's URL) in the
-   host's dashboard. Run the seed script once via the host's shell/console,
-   or trigger it as a one-off job.
-3. **Frontend**: update `src/environments.ts` to point `apiBaseUrl` at your
-   deployed backend URL, then `npm run build`, and deploy the `dist/gbms-frontend`
-   folder to Vercel, Netlify, or Render's static site hosting.
-4. Confirm CORS: the backend's `CORS_ORIGIN` env var must match your deployed
-   frontend's exact origin.
+http://localhost:4200
+🔐 Security
+Environment variables are stored in .env
+.env is excluded from Git
+Passwords are hashed using bcrypt
+JWT-based authentication is implemented
+Role-based authorization protects restricted routes
+📊 Main Modules
+Module Description
+Dashboard Budget and expenditure analytics
+Departments Department management
+Budgets Budget allocation and tracking
+Expenditures Expense recording and monitoring
+Alerts Budget utilization alerts
+Reports CSV and PDF reports
+Admin Panel User and system administration
+🎯 Project Objective
 
-## Mapping to the project brief
+The objective of GBMS is to provide a centralized platform for monitoring government department budgets and expenditures while improving financial visibility through dashboards, alerts, and reports.
 
-| Requirement | Where |
-|---|---|
-| Secure login & RBAC (Finance Officer/Dept Head/Admin) | `backend/middleware/auth.js`, all routes |
-| Budget allocation entry/management | Budgets page + `/api/budgets` |
-| Expenditure tracking + supporting docs | Expenditures page + multer upload |
-| Real-time utilization % | `budgetController.utilization`, dashboard |
-| Under-utilization detection (<40% used, 70%+ of year elapsed) | `services/anomalyDetection.js` (thresholds admin-configurable) |
-| Spending spike / deviation detection | Same service, `spikeMultiplier` |
-| Alerts & dashboard visualizations | Alerts page, Dashboard bar/pie charts |
-| Downloadable reports (PDF/CSV) | Reports page + `/api/reports/*` |
-| Admin: thresholds, users, audit logs | Admin Panel page |
-| Minimum 6-7 interconnected pages | 9 pages, shared nav/auth state |
-| Realistic (not fake/random) data | `backend/seed/seed.js` |
+👨‍💻 Developer
 
-## Known simplifications (worth knowing before you submit this as final)
+Priyanshu Dubey
 
-- Anomaly detection is rule-based (as the brief allows: "with optional AI
-  enhancements") — it is not a trained ML model. If you specifically need a
-  ML/statistical forecasting component for full marks, that's a separate
-  addition (e.g. a linear regression or moving-average forecast layered onto
-  `budget_prediction`-style logic).
-- File uploads are stored on local disk under `backend/uploads/` — fine for a
-  single-instance deploy; would need S3/Cloud Storage for a multi-instance
-  production setup.
-- No automated test suite is included; add Jest/Supertest for the backend and
-  Karma/Jasmine (default Angular) specs if your submission requires tests.
+GitHub: https://github.com/PDubey-tech26
+
+📄 License
+
+This project is developed for educational and portfolio purposes.
