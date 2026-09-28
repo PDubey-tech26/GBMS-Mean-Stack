@@ -1,0 +1,65 @@
+<div class="page-header">
+  <h1>Expenditure Transactions</h1>
+  <button (click)="openCreate()">+ Record Expenditure</button>
+</div>
+
+<div class="message error" *ngIf="error">{{ error }}</div>
+<div class="message success" *ngIf="success">{{ success }}</div>
+
+<div class="card" *ngIf="showForm">
+  <h3 style="margin-top:0">Record Expenditure</h3>
+  <form class="form-grid" (ngSubmit)="submit()">
+    <div>
+      <label>Budget</label>
+      <select [(ngModel)]="form.budget" name="budget" required>
+        <option value="" disabled>Select budget</option>
+        <option *ngFor="let b of budgets" [value]="b._id">{{ b.category }} ({{ b.financialYear }})</option>
+      </select>
+    </div>
+    <div>
+      <label>Amount</label>
+      <input type="number" min="0" [(ngModel)]="form.amount" name="amount" required />
+    </div>
+    <div>
+      <label>Category</label>
+      <input [(ngModel)]="form.category" name="category" required placeholder="e.g. Salaries" />
+    </div>
+    <div>
+      <label>Transaction Date</label>
+      <input type="date" [(ngModel)]="form.transactionDate" name="transactionDate" />
+    </div>
+    <div>
+      <label>Description</label>
+      <input [(ngModel)]="form.description" name="description" />
+    </div>
+    <div>
+      <label>Supporting Document</label>
+      <input type="file" (change)="onFileSelected($event)" />
+    </div>
+    <div style="align-self:flex-end; display:flex; gap:8px;">
+      <button type="submit">Save</button>
+      <button type="button" class="secondary" (click)="showForm=false">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <div *ngIf="loading">Loading...</div>
+  <table *ngIf="!loading">
+    <thead><tr><th>Budget</th><th>Category</th><th>Amount</th><th>Date</th><th>Document</th><th>Actions</th></tr></thead>
+    <tbody>
+      <tr *ngFor="let e of expenditures">
+        <td>{{ budgetLabel(e.budget) }}</td>
+        <td>{{ e.category }}</td>
+        <td>{{ e.amount | number:'1.0-0' }}</td>
+        <td>{{ e.transactionDate | date:'mediumDate' }}</td>
+        <td>
+          <a *ngIf="e.supportingDocument" [href]="e.supportingDocument" target="_blank">View</a>
+          <span *ngIf="!e.supportingDocument">—</span>
+        </td>
+        <td><button class="danger" *ngIf="auth.hasRole('admin','finance_officer')" (click)="remove(e)">Delete</button></td>
+      </tr>
+      <tr *ngIf="expenditures.length === 0"><td colspan="6">No expenditures recorded yet.</td></tr>
+    </tbody>
+  </table>
+</div>

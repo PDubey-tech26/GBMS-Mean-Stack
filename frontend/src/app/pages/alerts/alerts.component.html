@@ -1,0 +1,36 @@
+<div class="page-header">
+  <h1>Anomaly Alerts</h1>
+  <button (click)="runDetection()" *ngIf="auth.hasRole('admin','finance_officer')" [disabled]="running">
+    {{ running ? 'Running detection...' : 'Run Detection Now' }}
+  </button>
+</div>
+
+<div class="message error" *ngIf="error">{{ error }}</div>
+<div class="message success" *ngIf="success">{{ success }}</div>
+
+<div style="margin-bottom:14px; display:flex; gap:8px;">
+  <button [class.secondary]="filter!=='open'" (click)="setFilter('open')">Open</button>
+  <button [class.secondary]="filter!=='resolved'" (click)="setFilter('resolved')">Resolved</button>
+  <button [class.secondary]="filter!=='all'" (click)="setFilter('all')">All</button>
+</div>
+
+<div class="card">
+  <div *ngIf="loading">Loading...</div>
+  <table *ngIf="!loading">
+    <thead><tr><th>Department</th><th>Budget</th><th>Type</th><th>Severity</th><th>Message</th><th>Status</th><th *ngIf="auth.hasRole('admin','finance_officer')">Actions</th></tr></thead>
+    <tbody>
+      <tr *ngFor="let a of alerts">
+        <td>{{ departmentName(a.department) }}</td>
+        <td>{{ budgetCategory(a.budget) }}</td>
+        <td>{{ a.alertType.replace('_',' ') }}</td>
+        <td><span class="badge" [ngClass]="a.severity.toLowerCase()">{{ a.severity }}</span></td>
+        <td>{{ a.message }}</td>
+        <td>{{ a.resolved ? 'Resolved' : 'Open' }}</td>
+        <td *ngIf="auth.hasRole('admin','finance_officer')">
+          <button class="secondary" *ngIf="!a.resolved" (click)="resolve(a)">Mark Resolved</button>
+        </td>
+      </tr>
+      <tr *ngIf="alerts.length === 0"><td colspan="7">No alerts in this view.</td></tr>
+    </tbody>
+  </table>
+</div>

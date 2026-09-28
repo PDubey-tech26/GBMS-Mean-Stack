@@ -1,0 +1,99 @@
+<div class="page-header"><h1>Admin Panel</h1></div>
+
+<div class="message error" *ngIf="error">{{ error }}</div>
+<div class="message success" *ngIf="success">{{ success }}</div>
+
+<div style="margin-bottom:14px; display:flex; gap:8px;">
+  <button [class.secondary]="tab!=='users'" (click)="setTab('users')">Users</button>
+  <button [class.secondary]="tab!=='thresholds'" (click)="setTab('thresholds')">Detection Thresholds</button>
+  <button [class.secondary]="tab!=='audit'" (click)="setTab('audit')">Audit Logs</button>
+</div>
+
+<div *ngIf="tab==='users'">
+  <div class="card">
+    <h3 style="margin-top:0">Create User</h3>
+    <form class="form-grid" (ngSubmit)="createUser()">
+      <div><label>Name</label><input [(ngModel)]="newUser.name" name="name" required /></div>
+      <div><label>Email</label><input type="email" [(ngModel)]="newUser.email" name="email" required /></div>
+      <div><label>Password</label><input type="password" [(ngModel)]="newUser.password" name="password" required /></div>
+      <div>
+        <label>Role</label>
+        <select [(ngModel)]="newUser.role" name="role">
+          <option value="admin">Admin</option>
+          <option value="finance_officer">Finance Officer</option>
+          <option value="department_head">Department Head</option>
+        </select>
+      </div>
+      <div>
+        <label>Department (for department heads)</label>
+        <select [(ngModel)]="newUser.department" name="department">
+          <option value="">None</option>
+          <option *ngFor="let d of departments" [value]="d._id">{{ d.name }}</option>
+        </select>
+      </div>
+      <div style="align-self:flex-end"><button type="submit">Create User</button></div>
+    </form>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Department</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let u of users">
+          <td>{{ u.name }}</td>
+          <td>{{ u.email }}</td>
+          <td style="text-transform:capitalize">{{ u.role.replace('_',' ') }}</td>
+          <td>{{ departmentName(u.department) }}</td>
+          <td>{{ u.isActive ? 'Active' : 'Disabled' }}</td>
+          <td><button class="secondary" (click)="toggleActive(u)">{{ u.isActive ? 'Disable' : 'Enable' }}</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div *ngIf="tab==='thresholds' && thresholds">
+  <div class="card">
+    <h3 style="margin-top:0">Anomaly Detection Thresholds</h3>
+    <form class="form-grid" (ngSubmit)="saveThresholds()">
+      <div>
+        <label>Under-utilization max % (flag if spend below this)</label>
+        <input type="number" [(ngModel)]="thresholds.underUtilizationMaxPercent" name="uu" />
+      </div>
+      <div>
+        <label>Under-utilization time elapsed % (of fiscal year)</label>
+        <input type="number" [(ngModel)]="thresholds.underUtilizationTimeElapsedPercent" name="uet" />
+      </div>
+      <div>
+        <label>Overspending warning %</label>
+        <input type="number" [(ngModel)]="thresholds.overspendingWarningPercent" name="ow" />
+      </div>
+      <div>
+        <label>Overspending critical %</label>
+        <input type="number" [(ngModel)]="thresholds.overspendingCriticalPercent" name="oc" />
+      </div>
+      <div>
+        <label>Spending spike multiplier</label>
+        <input type="number" step="0.1" [(ngModel)]="thresholds.spikeMultiplier" name="sm" />
+      </div>
+      <div style="align-self:flex-end"><button type="submit">Save Thresholds</button></div>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="tab==='audit'">
+  <div class="card">
+    <table>
+      <thead><tr><th>User</th><th>Action</th><th>Entity</th><th>Timestamp</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let log of auditLogs">
+          <td>{{ log.user?.name }} ({{ log.user?.role }})</td>
+          <td>{{ log.action }}</td>
+          <td>{{ log.entity }}</td>
+          <td>{{ log.timestamp | date:'medium' }}</td>
+        </tr>
+        <tr *ngIf="auditLogs.length === 0"><td colspan="4">No audit entries yet.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>

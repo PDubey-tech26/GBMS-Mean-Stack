@@ -1,0 +1,252 @@
+
+<div class="reports-page">
+
+  <!-- Hero Section -->
+  <section class="reports-hero">
+    <div class="hero-content">
+      <span class="eyebrow">REPORTS</span>
+
+      <h1>Government Budget Reports</h1>
+
+      <p>
+        Download detailed reports and insights about budgets,
+        expenditures and system alerts. Analyze financial data
+        for better decision making.
+      </p>
+    </div>
+
+    <div class="hero-decoration">
+      <div class="chart-card">
+        <div class="chart-header">
+          <span>Budget Utilization</span>
+          <strong>82%</strong>
+        </div>
+
+        <div class="chart-bars">
+          <span style="height: 45%"></span>
+          <span style="height: 65%"></span>
+          <span style="height: 52%"></span>
+          <span style="height: 80%"></span>
+          <span style="height: 70%"></span>
+          <span style="height: 92%"></span>
+        </div>
+      </div>
+
+      <div class="floating-badge">
+        <span>✓</span>
+        Better Governance
+      </div>
+    </div>
+  </section>
+
+  <!-- Error -->
+  <div class="message error" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <!-- Report Cards -->
+  <section class="report-grid">
+
+    <!-- Budgets -->
+    <div class="report-card budget-card">
+      <div class="card-top">
+        <div class="report-icon green">
+          <span>▣</span>
+        </div>
+
+        <div class="arrow">
+          →
+        </div>
+      </div>
+
+      <h2>Budgets (CSV)</h2>
+
+      <p>
+        All budget allocations across departments with
+        detailed financial information.
+      </p>
+
+      <div class="info-box green-info">
+        <span>▤</span>
+        <span>
+          Includes department-wise allocation,
+          fiscal year and status.
+        </span>
+      </div>
+
+      <button
+        class="download-btn green-btn"
+        (click)="downloadCsv('budgets')"
+      >
+        <span>↓</span>
+        Download CSV
+        <span class="btn-arrow">→</span>
+      </button>
+    </div>
+
+    <!-- Expenditures -->
+    <div class="report-card expenditure-card">
+      <div class="card-top">
+        <div class="report-icon blue">
+          <span>▤</span>
+        </div>
+
+        <div class="arrow">
+          →
+        </div>
+      </div>
+
+      <h2>Expenditures (CSV)</h2>
+
+      <p>
+        All recorded expenditure transactions with
+        complete financial details.
+      </p>
+
+      <div class="info-box blue-info">
+        <span>◉</span>
+        <span>
+          Includes transaction date, category,
+          amount and status.
+        </span>
+      </div>
+
+      <button
+        class="download-btn blue-btn"
+        (click)="downloadCsv('expenditures')"
+      >
+        <span>↓</span>
+        Download CSV
+        <span class="btn-arrow">→</span>
+      </button>
+    </div>
+
+    <!-- Alerts -->
+    <div class="report-card alert-card">
+      <div class="card-top">
+        <div class="report-icon orange">
+          <span>♧</span>
+        </div>
+
+        <div class="arrow">
+          →
+        </div>
+      </div>
+
+      <h2>Alerts (CSV)</h2>
+
+      <p>
+        All anomaly alerts, including resolved and
+        currently open alerts.
+      </p>
+
+      <div class="info-box orange-info">
+        <span>⚠</span>
+        <span>
+          Includes threshold breaches, unusual
+          spending and alert history.
+        </span>
+      </div>
+
+      <button
+        class="download-btn orange-btn"
+        (click)="downloadCsv('alerts')"
+      >
+        <span>↓</span>
+        Download CSV
+        <span class="btn-arrow">→</span>
+      </button>
+    </div>
+
+    <!-- PDF -->
+    <div class="report-card pdf-card">
+      <div class="card-top">
+        <div class="report-icon purple">
+          <span>▱</span>
+        </div>
+
+        <div class="arrow">
+          →
+        </div>
+      </div>
+
+      <h2>Summary Report (PDF)</h2>
+
+      <p>
+        Department-wise budget utilization summary
+        with important financial insights.
+      </p>
+
+      <div class="info-box purple-info">
+        <span>▥</span>
+        <span>
+          Includes visual charts, key metrics
+          and utilization analysis.
+        </span>
+      </div>
+
+      <button
+        class="download-btn purple-btn"
+        (click)="downloadPdf()"
+      >
+        <span>↓</span>
+        Download PDF
+        <span class="btn-arrow">→</span>
+      </button>
+    </div>
+
+  </section>
+
+  <!-- Benefits -->
+  <section class="benefits-card">
+
+    <div class="benefits-title">
+      <div class="bulb">
+        💡
+      </div>
+
+      <div>
+        <h2>Report Benefits</h2>
+
+        <p>
+          Get complete visibility of budget utilization
+          and ensure transparency with downloadable reports.
+        </p>
+      </div>
+    </div>
+
+    <div class="benefits-list">
+
+      <div class="benefit">
+        <div class="benefit-icon">✓</div>
+        <div>
+          <strong>Transparent Monitoring</strong>
+          <span>Clear financial reporting</span>
+        </div>
+      </div>
+
+      <div class="benefit-divider"></div>
+
+      <div class="benefit">
+        <div class="benefit-icon">◔</div>
+        <div>
+          <strong>Data-Driven Decisions</strong>
+          <span>Analyze spending patterns</span>
+        </div>
+      </div>
+
+      <div class="benefit-divider"></div>
+
+      <div class="benefit">
+        <div class="benefit-icon">▥</div>
+        <div>
+          <strong>Better Governance</strong>
+          <span>Improve budget utilization</span>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+</div>

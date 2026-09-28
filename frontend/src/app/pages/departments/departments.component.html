@@ -1,0 +1,48 @@
+<div class="page-header">
+  <h1>Departments</h1>
+  <button (click)="openCreate()" *ngIf="auth.hasRole('admin','finance_officer')">+ New Department</button>
+</div>
+
+<div class="message error" *ngIf="error">{{ error }}</div>
+<div class="message success" *ngIf="success">{{ success }}</div>
+
+<div class="card" *ngIf="showForm">
+  <h3 style="margin-top:0">{{ editingId ? 'Edit Department' : 'New Department' }}</h3>
+  <form class="form-grid" (ngSubmit)="submit()">
+    <div>
+      <label>Name</label>
+      <input [(ngModel)]="form.name" name="name" required />
+    </div>
+    <div>
+      <label>Code</label>
+      <input [(ngModel)]="form.code" name="code" required [disabled]="!!editingId" />
+    </div>
+    <div>
+      <label>Type</label>
+      <input [(ngModel)]="form.departmentType" name="departmentType" />
+    </div>
+    <div style="align-self:flex-end; display:flex; gap:8px;">
+      <button type="submit">Save</button>
+      <button type="button" class="secondary" (click)="showForm=false">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <div *ngIf="loading">Loading...</div>
+  <table *ngIf="!loading">
+    <thead><tr><th>Name</th><th>Code</th><th>Type</th><th *ngIf="auth.hasRole('admin','finance_officer')">Actions</th></tr></thead>
+    <tbody>
+      <tr *ngFor="let d of departments">
+        <td>{{ d.name }}</td>
+        <td>{{ d.code }}</td>
+        <td>{{ d.departmentType }}</td>
+        <td *ngIf="auth.hasRole('admin','finance_officer')">
+          <button class="secondary" (click)="openEdit(d)">Edit</button>
+          <button class="danger" style="margin-left:6px" *ngIf="auth.hasRole('admin')" (click)="remove(d)">Delete</button>
+        </td>
+      </tr>
+      <tr *ngIf="departments.length === 0"><td colspan="4">No departments yet.</td></tr>
+    </tbody>
+  </table>
+</div>

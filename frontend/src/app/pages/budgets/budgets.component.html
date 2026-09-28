@@ -1,0 +1,72 @@
+<div class="page-header">
+  <h1>Budget Allocations</h1>
+  <button (click)="openCreate()" *ngIf="auth.hasRole('admin','finance_officer')">+ New Budget</button>
+</div>
+
+<div class="message error" *ngIf="error">{{ error }}</div>
+<div class="message success" *ngIf="success">{{ success }}</div>
+
+<div class="card" *ngIf="showForm">
+  <h3 style="margin-top:0">{{ editingId ? 'Edit Budget' : 'New Budget' }}</h3>
+  <form class="form-grid" (ngSubmit)="submit()">
+    <div>
+      <label>Department</label>
+      <select [(ngModel)]="form.department" name="department" required>
+        <option value="" disabled>Select department</option>
+        <option *ngFor="let d of departments" [value]="d._id">{{ d.name }}</option>
+      </select>
+    </div>
+    <div>
+      <label>Financial Year</label>
+      <input [(ngModel)]="form.financialYear" name="financialYear" required placeholder="2025-2026" />
+    </div>
+    <div>
+      <label>Quarter</label>
+      <select [(ngModel)]="form.quarter" name="quarter">
+        <option value="ANNUAL">Annual</option>
+        <option value="Q1">Q1</option>
+        <option value="Q2">Q2</option>
+        <option value="Q3">Q3</option>
+        <option value="Q4">Q4</option>
+      </select>
+    </div>
+    <div>
+      <label>Category / Scheme</label>
+      <input [(ngModel)]="form.category" name="category" required placeholder="e.g. National Health Mission" />
+    </div>
+    <div>
+      <label>Allocated Amount</label>
+      <input type="number" min="0" [(ngModel)]="form.allocatedAmount" name="allocatedAmount" required />
+    </div>
+    <div>
+      <label>Description</label>
+      <input [(ngModel)]="form.description" name="description" />
+    </div>
+    <div style="align-self:flex-end; display:flex; gap:8px;">
+      <button type="submit">Save</button>
+      <button type="button" class="secondary" (click)="showForm=false">Cancel</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <div *ngIf="loading">Loading...</div>
+  <table *ngIf="!loading">
+    <thead>
+      <tr><th>Department</th><th>Category</th><th>FY</th><th>Allocated</th><th *ngIf="auth.hasRole('admin','finance_officer')">Actions</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let b of budgets">
+        <td>{{ departmentName(b.department) }}</td>
+        <td>{{ b.category }}</td>
+        <td>{{ b.financialYear }} ({{ b.quarter }})</td>
+        <td>{{ b.allocatedAmount | number:'1.0-0' }}</td>
+        <td *ngIf="auth.hasRole('admin','finance_officer')">
+          <button class="secondary" (click)="openEdit(b)">Edit</button>
+          <button class="danger" style="margin-left:6px" (click)="remove(b)">Delete</button>
+        </td>
+      </tr>
+      <tr *ngIf="budgets.length === 0"><td colspan="5">No budgets yet.</td></tr>
+    </tbody>
+  </table>
+</div>
