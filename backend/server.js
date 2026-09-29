@@ -11,10 +11,12 @@ const app = express();
 connectDB();
 
 app.use(cors({
-  origin: [
-    "http://localhost:4200",
-    "https://gbms-mean-stack-apcx0huax-pdtech.vercel.app"
-  ],
+    origin: [
+  "http://localhost:4200",
+  "https://gbms-mean-stack.vercel.app",
+  "https://gbms-mean-stack-apcx0huax-pdtech.vercel.app",
+  "https://gbms-mean-stack-git-main-pdtech.vercel.app"
+],
   credentials: true
 }));
 app.use(express.json());
