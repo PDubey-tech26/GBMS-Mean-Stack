@@ -11,7 +11,11 @@ const app = express();
 connectDB();
 
 app.use(cors({
-  origin: "http://localhost:4200"
+  origin: [
+    "http://localhost:4200",
+    "https://gbms-mean-stack-apcx0huax-pdtech.vercel.app"
+  ],
+  credentials: true
 }));
 app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
