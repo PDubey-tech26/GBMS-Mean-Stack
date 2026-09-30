@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiBaseUrl: 'https://gbms-backend-se1i.onrender.com/api'
+  apiBaseUrl: 'http://localhost:5000/api'
 };

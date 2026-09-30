@@ -19,8 +19,11 @@ import { AuthService } from '../../core/services/auth.service';
       <a routerLink="/budgets" routerLinkActive="active">Budgets</a>
       <a routerLink="/expenditures" routerLinkActive="active">Expenditures</a>
       <a routerLink="/alerts" routerLinkActive="active">Alerts</a>
-      <a routerLink="/reports" routerLinkActive="active" *ngIf="auth.hasRole('admin','finance_officer')">Reports</a>
-      <a routerLink="/admin" routerLinkActive="active" *ngIf="auth.hasRole('admin')">Admin Panel</a>
+      <a routerLink="/reports" routerLinkActive="active"
+   *ngIf="auth.hasRole('admin','finance_officer','department_head')">
+   Reports
+</a>
+      <a routerLink="/admin" routerLinkActiv e="active" *ngIf="auth.hasRole('admin')">Admin Panel</a>
     </nav>
     <div class="user-box" *ngIf="auth.currentUser() as user">
       <div class="user-name">{{ user.name }}</div>
