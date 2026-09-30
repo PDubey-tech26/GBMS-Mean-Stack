@@ -5,7 +5,13 @@ const Alert = require("../models/Alert");
 
 exports.summary = async (req, res, next) => {
   try {
-    const isDeptHead = req.user.role === "department_head" && req.user.department;
+   const isDeptHead = req.user.role === "department_head";
+
+if (isDeptHead && !req.user.department) {
+  return res.status(403).json({
+    message: "Department is not assigned to this user"
+  });
+}
 
     const deptFilter = isDeptHead ? { _id: req.user.department } : {};
     const departments = await Department.find(deptFilter).sort({ name: 1 });

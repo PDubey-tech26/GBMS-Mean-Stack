@@ -4,13 +4,6 @@ const Expenditure = require("../models/Expenditure");
 const Alert = require("../models/Alert");
 const Threshold = require("../models/Threshold");
 
-// -------------------------------------------------------------------------
-// Fiscal year helpers
-// -------------------------------------------------------------------------
-// FISCAL_YEAR_START_MONTH env (1-12). Given a budget's allocationDate we treat
-// the fiscal year as running for 12 months from the configured start month
-// in the allocation year (or the previous start if allocationDate falls
-// before that year's start month).
 
 function getFiscalYearBounds(referenceDate) {
   const startMonth = parseInt(process.env.FISCAL_YEAR_START_MONTH || "4", 10) - 1; // 0-indexed

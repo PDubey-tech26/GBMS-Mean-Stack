@@ -32,7 +32,7 @@ export const routes: Routes = [
   },
   {
     path: 'reports',
-    canActivate: [authGuard, roleGuard('admin', 'finance_officer')],
+    canActivate: [authGuard, roleGuard('admin', 'finance_officer', 'department_head')],
     loadComponent: () => import('./pages/reports/reports.component').then((m) => m.ReportsComponent)
   },
   {

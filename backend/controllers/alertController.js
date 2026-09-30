@@ -9,9 +9,15 @@ exports.list = async (req, res, next) => {
     if (req.query.department) filter.department = req.query.department;
     if (req.query.severity) filter.severity = req.query.severity;
 
-    if (req.user.role === "department_head" && req.user.department) {
-      filter.department = req.user.department;
-    }
+    if (req.user.role === "department_head") {
+  if (!req.user.department) {
+    return res.status(403).json({
+      message: "Department is not assigned to this user"
+    });
+  }
+
+  filter.department = req.user.department;
+}
 
     const alerts = await Alert.find(filter)
       .populate("department", "name code")
@@ -27,7 +33,21 @@ exports.list = async (req, res, next) => {
 exports.resolve = async (req, res, next) => {
   try {
     const alert = await Alert.findById(req.params.id);
-    if (!alert) return res.status(404).json({ message: "Alert not found" });
+if (!alert) return res.status(404).json({ message: "Alert not found" });
+
+if (req.user.role === "department_head") {
+  if (!req.user.department) {
+    return res.status(403).json({
+      message: "Department is not assigned to this user"
+    });
+  }
+
+  if (String(alert.department) !== String(req.user.department)) {
+    return res.status(403).json({
+      message: "You can only resolve alerts from your department"
+    });
+  }
+}
 
     alert.resolved = true;
     alert.resolvedBy = req.user._id;
