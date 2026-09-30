@@ -29,7 +29,12 @@ app.get("/", (req, res) => {
     version: "1.0.0"
   });
 });
-
+app.get("/api/test", (req, res) => {
+  res.json({
+    ok: true,
+    message: "API routes are working"
+  });
+});
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/departments", require("./routes/departmentRoutes"));
 app.use("/api/budgets", require("./routes/budgetRoutes"));
