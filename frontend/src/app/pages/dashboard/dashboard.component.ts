@@ -7,19 +7,31 @@ import { registerables } from 'chart.js';
 
 import { DashboardService } from '../../core/services/dashboard.service';
 import { DashboardSummary } from '../../core/models/models';
+
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, BaseChartDirective],
+  imports: [
+    CommonModule,
+    RouterLink,
+    BaseChartDirective
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+
   data: DashboardSummary | null = null;
+
   loading = true;
+
   error = '';
+
+  // =========================
+  // BAR CHART
+  // =========================
 
   barChartData: ChartConfiguration<'bar'>['data'] = {
     labels: [],
@@ -29,12 +41,23 @@ export class DashboardComponent implements OnInit {
   barChartOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
+
     plugins: {
       legend: {
         display: true
       }
+    },
+
+    scales: {
+      y: {
+        beginAtZero: true
+      }
     }
   };
+
+  // =========================
+  // PIE CHART
+  // =========================
 
   pieChartData: ChartConfiguration<'pie'>['data'] = {
     labels: [],
@@ -44,6 +67,7 @@ export class DashboardComponent implements OnInit {
   pieChartOptions: ChartConfiguration<'pie'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
+
     plugins: {
       legend: {
         display: true
@@ -51,55 +75,204 @@ export class DashboardComponent implements OnInit {
     }
   };
 
-  constructor(private dashboardService: DashboardService) {}
+  // =========================
+  // SPENDING TREND LINE CHART
+  // =========================
+
+  lineChartData: ChartConfiguration<'line'>['data'] = {
+    labels: [],
+    datasets: [
+      {
+        data: [],
+        label: 'Monthly Expenditure',
+        tension: 0.35,
+        fill: true,
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }
+    ]
+  };
+
+  lineChartOptions: ChartConfiguration<'line'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+
+    plugins: {
+      legend: {
+        display: true
+      },
+
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const value = context.parsed.y ?? 0;
+
+            return ` Expenditure: ₹${value.toLocaleString('en-IN')}`;
+          }
+        }
+      }
+    },
+
+    scales: {
+      y: {
+        beginAtZero: true,
+
+        ticks: {
+          callback: (value) => {
+            return `₹${Number(value).toLocaleString('en-IN')}`;
+          }
+        }
+      }
+    }
+  };
+
+  constructor(
+    private dashboardService: DashboardService
+  ) {}
+
+  // =========================
+  // INITIAL LOAD
+  // =========================
 
   ngOnInit(): void {
+
     this.dashboardService.summary().subscribe({
+
       next: (res) => {
+
         this.data = res;
+
         this.loading = false;
+
         this.buildCharts(res);
       },
+
       error: (err) => {
+
         this.loading = false;
+
         this.error =
-          err?.error?.message || 'Failed to load dashboard';
+          err?.error?.message ||
+          'Failed to load dashboard';
       }
+
     });
   }
 
+  // =========================
+  // BUILD ALL CHARTS
+  // =========================
+
   private buildCharts(res: DashboardSummary): void {
+
+    // =========================
+    // BAR CHART
+    // =========================
+
     this.barChartData = {
-      labels: res.departments.map((d) => d.code),
+
+      labels: res.departments.map(
+        (d) => d.code
+      ),
+
       datasets: [
+
         {
-          data: res.departments.map((d) => d.totalBudget),
+          data: res.departments.map(
+            (d) => d.totalBudget
+          ),
+
           label: 'Allocated'
         },
+
         {
-          data: res.departments.map((d) => d.totalExpense),
+          data: res.departments.map(
+            (d) => d.totalExpense
+          ),
+
           label: 'Spent'
         }
+
       ]
     };
 
+    // =========================
+    // PIE CHART
+    // =========================
+
     this.pieChartData = {
-      labels: res.categoryBreakdown.map((c) => c.category),
+
+      labels: res.categoryBreakdown.map(
+        (c) => c.category
+      ),
+
       datasets: [
+
         {
-          data: res.categoryBreakdown.map((c) => c.total)
+          data: res.categoryBreakdown.map(
+            (c) => c.total
+          )
         }
+
+      ]
+    };
+
+    // =========================
+    // LINE / TREND CHART
+    // =========================
+
+    this.lineChartData = {
+
+      labels: res.spendingTrend.map(
+        (item) => item.month
+      ),
+
+      datasets: [
+
+        {
+          data: res.spendingTrend.map(
+            (item) => item.total
+          ),
+
+          label: 'Monthly Expenditure',
+
+          tension: 0.35,
+
+          fill: true,
+
+          pointRadius: 4,
+
+          pointHoverRadius: 6
+        }
+
       ]
     };
   }
 
+  // =========================
+  // UTILIZATION CLASS
+  // =========================
+
   utilizationClass(pct: number): string {
-    if (pct >= 100) return 'danger';
-    if (pct >= 80) return 'warning';
+
+    if (pct >= 100) {
+      return 'danger';
+    }
+
+    if (pct >= 80) {
+      return 'warning';
+    }
+
     return '';
   }
 
+  // =========================
+  // ALERT SEVERITY CLASS
+  // =========================
+
   severityClass(sev: string): string {
+
     return sev.toLowerCase();
   }
+
 }

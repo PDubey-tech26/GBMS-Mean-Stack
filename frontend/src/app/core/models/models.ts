@@ -1,4 +1,7 @@
-export type UserRole = 'admin' | 'finance_officer' | 'department_head';
+export type UserRole =
+  'admin' |
+  'finance_officer' |
+  'department_head';
 
 export interface User {
   _id: string;
@@ -43,8 +46,16 @@ export interface AlertItem {
   _id: string;
   department: Department | string;
   budget: Budget | string;
-  alertType: 'UNDER_UTILIZATION' | 'OVERSPENDING' | 'SPENDING_SPIKE' | 'DEVIATION';
-  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  alertType:
+    | 'UNDER_UTILIZATION'
+    | 'OVERSPENDING'
+    | 'SPENDING_SPIKE'
+    | 'DEVIATION';
+  severity:
+    | 'LOW'
+    | 'MEDIUM'
+    | 'HIGH'
+    | 'CRITICAL';
   message: string;
   utilizationPercent: number | null;
   resolved: boolean;
@@ -61,8 +72,29 @@ export interface DashboardSummary {
     utilization: number;
     openAlertCount: number;
   };
-  departments: Array<{ id: string; name: string; code: string; totalBudget: number; totalExpense: number; utilization: number }>;
-  categoryBreakdown: Array<{ category: string; total: number }>;
+
+  departments: Array<{
+    id: string;
+    name: string;
+    code: string;
+    totalBudget: number;
+    totalExpense: number;
+    utilization: number;
+  }>;
+
+  categoryBreakdown: Array<{
+    category: string;
+    total: number;
+  }>;
+
+  // Monthly expenditure trend
+  spendingTrend: Array<{
+    key: string;
+    month: string;
+    total: number;
+  }>;
+
   recentExpenditures: Expenditure[];
+
   openAlerts: AlertItem[];
 }

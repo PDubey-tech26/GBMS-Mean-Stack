@@ -1,314 +1,693 @@
 <div class="dashboard-page">
 
-  <!-- Header -->
+  <!-- ================= HEADER ================= -->
+
   <div class="dashboard-heading">
+
     <div>
       <span class="eyebrow">OVERVIEW</span>
+
       <h1>Budget Utilization Dashboard</h1>
-      <p>Monitor government budgets, expenditures and financial alerts.</p>
+
+      <p>
+        Monitor government budgets, expenditures and financial alerts.
+      </p>
     </div>
 
     <div class="dashboard-status">
       <span class="status-dot"></span>
       System Active
     </div>
+
   </div>
 
-  <div *ngIf="loading" class="loading-card">
+
+  <!-- ================= LOADING ================= -->
+
+  <div
+    *ngIf="loading"
+    class="loading-card">
+
     <div class="loader"></div>
-    <span>Loading dashboard...</span>
+
+    <span>
+      Loading dashboard...
+    </span>
+
   </div>
 
-  <div class="message error" *ngIf="error">
+
+  <!-- ================= ERROR ================= -->
+
+  <div
+    *ngIf="error"
+    class="message error">
+
     {{ error }}
+
   </div>
+
+
+  <!-- ================= DASHBOARD DATA ================= -->
 
   <ng-container *ngIf="data">
 
-    <!-- ================= STATS ================= -->
+    <!-- ================================================= -->
+    <!-- STATS -->
+    <!-- ================================================= -->
 
     <div class="stats-grid">
 
+
+      <!-- TOTAL ALLOCATED -->
+
       <div class="stat-card allocated">
+
         <div class="stat-top">
-          <div class="stat-icon">₹</div>
-          <span class="stat-label">ALLOCATED</span>
+
+          <div class="stat-icon">
+            ₹
+          </div>
+
+          <span class="stat-label">
+            ALLOCATED
+          </span>
+
         </div>
 
-        <h3>Total Allocated</h3>
+        <h3>
+          Total Allocated
+        </h3>
 
         <div class="stat-value">
+
           ₹{{ data.summary.totalBudget | number:'1.0-0' }}
+
         </div>
 
         <div class="stat-footer">
-          <span class="positive">●</span>
+
+          <span class="positive">
+            ●
+          </span>
+
           Total approved budget
+
         </div>
+
       </div>
 
+
+      <!-- TOTAL SPENT -->
 
       <div class="stat-card spent">
+
         <div class="stat-top">
-          <div class="stat-icon">↗</div>
-          <span class="stat-label">EXPENDITURE</span>
+
+          <div class="stat-icon">
+            ↗
+          </div>
+
+          <span class="stat-label">
+            EXPENDITURE
+          </span>
+
         </div>
 
-        <h3>Total Spent</h3>
+        <h3>
+          Total Spent
+        </h3>
 
         <div class="stat-value">
+
           ₹{{ data.summary.totalExpense | number:'1.0-0' }}
+
         </div>
 
         <div class="stat-footer">
-          <span class="blue-dot">●</span>
+
+          <span class="blue-dot">
+            ●
+          </span>
+
           Recorded expenditure
+
         </div>
+
       </div>
 
+
+      <!-- REMAINING -->
 
       <div class="stat-card remaining">
+
         <div class="stat-top">
-          <div class="stat-icon">◷</div>
-          <span class="stat-label">BALANCE</span>
+
+          <div class="stat-icon">
+            ◷
+          </div>
+
+          <span class="stat-label">
+            BALANCE
+          </span>
+
         </div>
 
-        <h3>Remaining</h3>
+        <h3>
+          Remaining
+        </h3>
 
         <div class="stat-value">
+
           ₹{{ data.summary.remaining | number:'1.0-0' }}
+
         </div>
 
         <div class="stat-footer">
-          <span class="green-dot">●</span>
+
+          <span class="green-dot">
+            ●
+          </span>
+
           Available balance
+
         </div>
+
       </div>
 
 
+      <!-- UTILIZATION -->
+
       <div class="stat-card utilization">
+
         <div class="stat-top">
-          <div class="stat-icon">%</div>
-          <span class="stat-label">UTILIZATION</span>
+
+          <div class="stat-icon">
+            %
+          </div>
+
+          <span class="stat-label">
+            UTILIZATION
+          </span>
+
         </div>
 
-        <h3>Overall Utilization</h3>
+        <h3>
+          Overall Utilization
+        </h3>
 
         <div class="stat-value">
+
           {{ data.summary.utilization }}%
+
         </div>
 
         <div class="mini-progress">
+
           <div
-            [style.width.%]="data.summary.utilization > 100 ? 100 : data.summary.utilization">
+            [style.width.%]="
+              data.summary.utilization > 100
+                ? 100
+                : data.summary.utilization
+            ">
           </div>
+
         </div>
+
       </div>
 
 
+      <!-- OPEN ALERTS -->
+
       <div class="stat-card alerts">
+
         <div class="stat-top">
-          <div class="stat-icon">!</div>
-          <span class="stat-label">ATTENTION</span>
+
+          <div class="stat-icon">
+            !
+          </div>
+
+          <span class="stat-label">
+            ATTENTION
+          </span>
+
         </div>
 
-        <h3>Open Alerts</h3>
+        <h3>
+          Open Alerts
+        </h3>
 
         <div class="stat-value">
+
           {{ data.summary.openAlertCount }}
+
         </div>
 
         <div class="stat-footer">
-          <span class="red-dot">●</span>
+
+          <span class="red-dot">
+            ●
+          </span>
+
           Requires attention
+
         </div>
+
       </div>
+
 
     </div>
 
 
-    <!-- ================= CHARTS ================= -->
+    <!-- ================================================= -->
+    <!-- FINANCIAL ANALYTICS -->
+    <!-- ================================================= -->
 
     <div class="section-title">
+
       <div>
-        <h2>Financial Analytics</h2>
-        <p>Visual overview of budget allocation and spending.</p>
+
+        <h2>
+          Financial Analytics
+        </h2>
+
+        <p>
+          Visual overview of budget allocation and spending.
+        </p>
+
       </div>
+
     </div>
+
+
+    <!-- ================================================= -->
+    <!-- CHARTS -->
+    <!-- ================================================= -->
 
     <div class="charts-grid">
 
+
+      <!-- ================= BAR CHART ================= -->
+
       <div class="dashboard-card chart-card-large">
+
         <div class="card-heading">
+
           <div>
-            <h3>Allocated vs Spent</h3>
-            <p>Department-wise comparison</p>
+
+            <h3>
+              Allocated vs Spent
+            </h3>
+
+            <p>
+              Department-wise comparison
+            </p>
+
           </div>
 
-          <span class="chart-badge">Departments</span>
+          <span class="chart-badge">
+            Departments
+          </span>
+
         </div>
 
+
         <div class="chart-wrapper">
+
           <canvas
             baseChart
             [data]="barChartData"
             [options]="barChartOptions"
             type="bar">
           </canvas>
+
         </div>
+
       </div>
 
 
+      <!-- ================= PIE CHART ================= -->
+
       <div class="dashboard-card">
+
         <div class="card-heading">
+
           <div>
-            <h3>Expenditure by Category</h3>
-            <p>Spending distribution</p>
+
+            <h3>
+              Expenditure by Category
+            </h3>
+
+            <p>
+              Spending distribution
+            </p>
+
           </div>
 
-          <span class="chart-badge purple">Categories</span>
+          <span class="chart-badge purple">
+            Categories
+          </span>
+
         </div>
 
+
         <div class="pie-wrapper">
+
           <canvas
             baseChart
             [data]="pieChartData"
             [options]="pieChartOptions"
             type="pie">
           </canvas>
+
         </div>
+
       </div>
+
+
+      <!-- ================================================= -->
+      <!-- MONTHLY SPENDING TREND -->
+      <!-- ================================================= -->
+
+      <div class="dashboard-card chart-card-large trend-chart-card">
+
+        <div class="card-heading">
+
+          <div>
+
+            <h3>
+              Monthly Spending Trend
+            </h3>
+
+            <p>
+              Expenditure trend based on recorded transactions
+            </p>
+
+          </div>
+
+          <span class="chart-badge">
+            Monthly Trend
+          </span>
+
+        </div>
+
+
+        <div class="chart-wrapper">
+
+          <canvas
+            baseChart
+            [data]="lineChartData"
+            [options]="lineChartOptions"
+            type="line">
+          </canvas>
+
+        </div>
+
+      </div>
+
 
     </div>
 
 
-    <!-- ================= DEPARTMENT TABLE ================= -->
+    <!-- ================================================= -->
+    <!-- DEPARTMENT TABLE -->
+    <!-- ================================================= -->
 
     <div class="dashboard-card table-card">
 
       <div class="card-heading">
+
         <div>
-          <h3>Department-wise Utilization</h3>
-          <p>Track budget usage across departments</p>
+
+          <h3>
+            Department-wise Utilization
+          </h3>
+
+          <p>
+            Track budget usage across departments
+          </p>
+
         </div>
 
         <span class="table-count">
-          {{ data.departments.length }} Departments
+
+          {{ data.departments.length }}
+          Departments
+
         </span>
+
       </div>
 
+
       <div class="table-container">
+
         <table>
 
           <thead>
+
             <tr>
-              <th>Department</th>
-              <th>Allocated</th>
-              <th>Spent</th>
-              <th>Utilization</th>
+
+              <th>
+                Department
+              </th>
+
+              <th>
+                Allocated
+              </th>
+
+              <th>
+                Spent
+              </th>
+
+              <th>
+                Utilization
+              </th>
+
             </tr>
+
           </thead>
+
 
           <tbody>
 
-            <tr *ngFor="let d of data.departments">
+
+            <tr
+              *ngFor="let d of data.departments">
+
+
+              <!-- DEPARTMENT -->
 
               <td>
+
                 <div class="department-cell">
+
                   <div class="department-avatar">
+
                     {{ d.name.charAt(0) }}
+
                   </div>
+
 
                   <div>
-                    <strong>{{ d.name }}</strong>
-                    <small>{{ d.code }}</small>
+
+                    <strong>
+                      {{ d.name }}
+                    </strong>
+
+                    <small>
+                      {{ d.code }}
+                    </small>
+
                   </div>
+
                 </div>
+
               </td>
 
+
+              <!-- ALLOCATED -->
+
               <td class="money">
+
                 ₹{{ d.totalBudget | number:'1.0-0' }}
+
               </td>
 
+
+              <!-- SPENT -->
+
               <td class="money">
+
                 ₹{{ d.totalExpense | number:'1.0-0' }}
+
               </td>
+
+
+              <!-- UTILIZATION -->
 
               <td class="utilization-cell">
 
                 <div class="utilization-row">
+
+
                   <div class="progress-bar">
+
                     <div
                       class="fill"
-                      [ngClass]="utilizationClass(d.utilization)"
-                      [style.width.%]="d.utilization > 100 ? 100 : d.utilization">
+                      [ngClass]="
+                        utilizationClass(d.utilization)
+                      "
+                      [style.width.%]="
+                        d.utilization > 100
+                          ? 100
+                          : d.utilization
+                      ">
                     </div>
+
                   </div>
 
-                  <strong>{{ d.utilization }}%</strong>
+
+                  <strong>
+
+                    {{ d.utilization }}%
+
+                  </strong>
+
+
                 </div>
 
               </td>
 
+
             </tr>
+
 
           </tbody>
 
         </table>
+
       </div>
 
     </div>
 
 
-    <!-- ================= BOTTOM SECTION ================= -->
+    <!-- ================================================= -->
+    <!-- BOTTOM SECTION -->
+    <!-- ================================================= -->
 
     <div class="bottom-grid">
 
-      <!-- Recent Expenditures -->
+
+      <!-- ================================================= -->
+      <!-- RECENT EXPENDITURES -->
+      <!-- ================================================= -->
+
       <div class="dashboard-card table-card">
 
         <div class="card-heading">
+
           <div>
-            <h3>Recent Expenditures</h3>
-            <p>Latest recorded transactions</p>
+
+            <h3>
+              Recent Expenditures
+            </h3>
+
+            <p>
+              Latest recorded transactions
+            </p>
+
           </div>
 
-          <a routerLink="/expenditures" class="view-link">
+
+          <a
+            routerLink="/expenditures"
+            class="view-link">
+
             View all →
+
           </a>
+
         </div>
+
 
         <div class="table-container">
 
           <table>
 
+
             <thead>
+
               <tr>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Date</th>
+
+                <th>
+                  Category
+                </th>
+
+                <th>
+                  Amount
+                </th>
+
+                <th>
+                  Date
+                </th>
+
               </tr>
+
             </thead>
+
 
             <tbody>
 
-              <tr *ngFor="let e of data.recentExpenditures">
+
+              <tr
+                *ngFor="
+                  let e of data.recentExpenditures
+                ">
+
 
                 <td>
+
                   <span class="category-name">
+
                     {{ e.category }}
+
                   </span>
+
                 </td>
+
 
                 <td class="money">
+
                   ₹{{ e.amount | number:'1.0-0' }}
+
                 </td>
 
+
                 <td class="date">
+
                   {{ e.transactionDate | date:'mediumDate' }}
+
+                </td>
+
+
+              </tr>
+
+
+              <tr
+                *ngIf="
+                  data.recentExpenditures.length === 0
+                ">
+
+                <td
+                  colspan="3"
+                  class="empty-state">
+
+                  No recent expenditures
+
                 </td>
 
               </tr>
+
 
             </tbody>
 
@@ -319,66 +698,140 @@
       </div>
 
 
-      <!-- Open Alerts -->
+      <!-- ================================================= -->
+      <!-- OPEN ALERTS -->
+      <!-- ================================================= -->
+
       <div class="dashboard-card table-card">
+
 
         <div class="card-heading">
 
+
           <div>
-            <h3>Open Alerts</h3>
-            <p>Items requiring attention</p>
+
+            <h3>
+              Open Alerts
+            </h3>
+
+            <p>
+              Items requiring attention
+            </p>
+
           </div>
 
-          <a routerLink="/alerts" class="view-link">
+
+          <a
+            routerLink="/alerts"
+            class="view-link">
+
             View all →
+
           </a>
+
 
         </div>
 
+
         <div class="table-container">
+
 
           <table>
 
+
             <thead>
+
               <tr>
-                <th>Type</th>
-                <th>Severity</th>
-                <th>Message</th>
+
+                <th>
+                  Type
+                </th>
+
+                <th>
+                  Severity
+                </th>
+
+                <th>
+                  Message
+                </th>
+
               </tr>
+
             </thead>
+
 
             <tbody>
 
-              <tr *ngFor="let a of data.openAlerts">
+
+              <tr
+                *ngFor="
+                  let a of data.openAlerts
+                ">
+
+
+                <!-- ALERT TYPE -->
 
                 <td>
+
                   <span class="alert-type">
-                    {{ a.alertType.replace('_',' ') }}
+
+                    {{ a.alertType.replace('_', ' ') }}
+
                   </span>
+
                 </td>
 
+
+                <!-- SEVERITY -->
+
                 <td>
+
                   <span
                     class="severity-badge"
-                    [ngClass]="severityClass(a.severity)">
+                    [ngClass]="
+                      severityClass(a.severity)
+                    ">
+
                     {{ a.severity }}
+
                   </span>
+
                 </td>
+
+
+                <!-- MESSAGE -->
 
                 <td class="alert-message">
+
                   {{ a.message }}
+
                 </td>
+
 
               </tr>
 
-              <tr *ngIf="data.openAlerts.length === 0">
 
-                <td colspan="3" class="empty-state">
-                  <span>✓</span>
+              <!-- NO ALERTS -->
+
+              <tr
+                *ngIf="
+                  data.openAlerts.length === 0
+                ">
+
+                <td
+                  colspan="3"
+                  class="empty-state">
+
+                  <span>
+                    ✓
+                  </span>
+
                   No open alerts
+
                 </td>
 
               </tr>
+
 
             </tbody>
 
@@ -388,7 +841,9 @@
 
       </div>
 
+
     </div>
+
 
   </ng-container>
 
