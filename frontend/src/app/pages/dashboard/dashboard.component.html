@@ -285,7 +285,41 @@
     <!-- ================================================= -->
 
     <div class="charts-grid">
+<!-- MONTHLY SPENDING TREND -->
 
+<div class="dashboard-card chart-card-large">
+
+  <div class="card-heading">
+
+    <div>
+
+      <h3>Monthly Spending Trend</h3>
+
+      <p>
+        Monthly expenditure over the selected period
+      </p>
+
+    </div>
+
+    <span class="chart-badge">
+      Trend
+    </span>
+
+  </div>
+
+
+  <div class="chart-wrapper">
+
+    <canvas
+      baseChart
+      [data]="lineChartData"
+      [options]="lineChartOptions"
+      type="line">
+    </canvas>
+
+  </div>
+
+</div>
 
       <!-- ================= BAR CHART ================= -->
 

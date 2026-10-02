@@ -7,27 +7,27 @@ exports.summary = async (req, res, next) => {
   try {
     const isDeptHead = req.user.role === "department_head";
 
+    // Department Head must have a department assigned
     if (isDeptHead && !req.user.department) {
       return res.status(403).json({
         message: "Department is not assigned to this user"
       });
     }
 
-    // =========================
+    // ---------------------------------------------------------
     // DEPARTMENT FILTER
-    // =========================
+    // ---------------------------------------------------------
 
     const deptFilter = isDeptHead
       ? { _id: req.user.department }
       : {};
 
-    const departments = await Department
-      .find(deptFilter)
+    const departments = await Department.find(deptFilter)
       .sort({ name: 1 });
 
-    // =========================
-    // BUDGETS
-    // =========================
+    // ---------------------------------------------------------
+    // BUDGET FILTER
+    // ---------------------------------------------------------
 
     const budgetFilter = isDeptHead
       ? { department: req.user.department }
@@ -37,19 +37,19 @@ exports.summary = async (req, res, next) => {
 
     const budgetIds = budgets.map((b) => b._id);
 
-    // =========================
-    // EXPENDITURES
-    // =========================
+    // ---------------------------------------------------------
+    // EXPENDITURE DATA
+    // ---------------------------------------------------------
 
-    const expenditures = await Expenditure
-      .find({
-        budget: { $in: budgetIds }
-      })
-      .sort({ transactionDate: -1 });
+    const expenditures = await Expenditure.find({
+      budget: { $in: budgetIds }
+    }).sort({
+      transactionDate: -1
+    });
 
-    // =========================
-    // BASIC SUMMARY
-    // =========================
+    // ---------------------------------------------------------
+    // SUMMARY CALCULATIONS
+    // ---------------------------------------------------------
 
     const totalBudget = budgets.reduce(
       (sum, budget) => sum + budget.allocatedAmount,
@@ -68,9 +68,9 @@ exports.summary = async (req, res, next) => {
         ? (totalExpense / totalBudget) * 100
         : 0;
 
-    // =========================
-    // OPEN ALERTS
-    // =========================
+    // ---------------------------------------------------------
+    // ALERTS
+    // ---------------------------------------------------------
 
     const alertFilter = {
       resolved: false
@@ -80,14 +80,13 @@ exports.summary = async (req, res, next) => {
       alertFilter.department = req.user.department;
     }
 
-    const openAlerts = await Alert
-      .find(alertFilter)
+    const openAlerts = await Alert.find(alertFilter)
       .populate("department", "name")
       .populate("budget", "category");
 
-    // =========================
+    // ---------------------------------------------------------
     // DEPARTMENT-WISE DATA
-    // =========================
+    // ---------------------------------------------------------
 
     const departmentRows = departments.map((dept) => {
       const deptBudgets = budgets.filter(
@@ -100,17 +99,19 @@ exports.summary = async (req, res, next) => {
       );
 
       const deptExpenses = expenditures.filter(
-        (expenditure) =>
-          deptBudgetIds.includes(String(expenditure.budget))
+        (expense) =>
+          deptBudgetIds.includes(String(expense.budget))
       );
 
       const deptTotalBudget = deptBudgets.reduce(
-        (sum, budget) => sum + budget.allocatedAmount,
+        (sum, budget) =>
+          sum + budget.allocatedAmount,
         0
       );
 
       const deptTotalExpense = deptExpenses.reduce(
-        (sum, expenditure) => sum + expenditure.amount,
+        (sum, expense) =>
+          sum + expense.amount,
         0
       );
 
@@ -130,81 +131,75 @@ exports.summary = async (req, res, next) => {
       };
     });
 
-    // =========================
+    // ---------------------------------------------------------
     // CATEGORY BREAKDOWN
-    // =========================
+    // ---------------------------------------------------------
 
     const categoryMap = {};
 
-    expenditures.forEach((expenditure) => {
-      categoryMap[expenditure.category] =
-        (categoryMap[expenditure.category] || 0) +
-        expenditure.amount;
+    expenditures.forEach((expense) => {
+      categoryMap[expense.category] =
+        (categoryMap[expense.category] || 0) +
+        expense.amount;
     });
 
-    const categoryBreakdown = Object
-      .entries(categoryMap)
-      .map(([category, total]) => ({
-        category,
-        total
-      }));
+    const categoryBreakdown = Object.entries(
+      categoryMap
+    ).map(([category, total]) => ({
+      category,
+      total
+    }));
 
-    // =========================
+    // ---------------------------------------------------------
     // MONTHLY SPENDING TREND
-    // =========================
+    // ---------------------------------------------------------
 
     const monthlyMap = {};
 
-    expenditures.forEach((expenditure) => {
-      const date = new Date(expenditure.transactionDate);
-
-      if (isNaN(date.getTime())) {
-        return;
-      }
+    expenditures.forEach((expense) => {
+      const date = new Date(expense.transactionDate);
 
       const year = date.getFullYear();
       const month = date.getMonth();
 
-      const key = `${year}-${String(month + 1).padStart(2, "0")}`;
+      const key = `${year}-${String(month + 1).padStart(
+        2,
+        "0"
+      )}`;
 
       if (!monthlyMap[key]) {
         monthlyMap[key] = {
           year,
           month,
-          total: 0
+          totalExpense: 0
         };
       }
 
-      monthlyMap[key].total += expenditure.amount;
+      monthlyMap[key].totalExpense += expense.amount;
     });
 
-    const monthNames = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec"
-    ];
-
-    const spendingTrend = Object
-      .entries(monthlyMap)
+    const monthlyTrend = Object.entries(monthlyMap)
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([key, value]) => ({
-        key,
-        month: `${monthNames[value.month]} ${value.year}`,
-        total: value.total
-      }));
+      .map(([key, value]) => {
+        const date = new Date(
+          value.year,
+          value.month,
+          1
+        );
 
-    // =========================
-    // RESPONSE
-    // =========================
+        return {
+          month: date.toLocaleString("en-US", {
+            month: "short",
+            year: "numeric"
+          }),
+          totalExpense:
+            Math.round(value.totalExpense * 100) / 100
+        };
+      });
+
+    // ---------------------------------------------------------
+    // FINAL RESPONSE
+    // ---------------------------------------------------------
 
     res.json({
       summary: {
@@ -222,7 +217,7 @@ exports.summary = async (req, res, next) => {
 
       categoryBreakdown,
 
-      spendingTrend,
+      monthlyTrend,
 
       recentExpenditures:
         expenditures.slice(0, 10),
@@ -230,7 +225,6 @@ exports.summary = async (req, res, next) => {
       openAlerts:
         openAlerts.slice(0, 10)
     });
-
   } catch (err) {
     next(err);
   }

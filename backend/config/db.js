@@ -1,14 +1,21 @@
-require("dotenv").config();
+const path = require("path");
+const dotenv = require("dotenv");
+
+dotenv.config({
+  path: path.join(__dirname, "..", ".env")
+});
 
 const mongoose = require("mongoose");
 
 async function connectDB() {
   try {
-    const uri =
-      process.env.MONGO_URI ||
-      "mongodb://127.0.0.1:27017/gbms";
+    const uri = process.env.MONGO_URI;
 
-    console.log("MongoDB URI loaded:", uri ? "YES" : "NO");
+    if (!uri) {
+      throw new Error(
+        "MONGO_URI is missing. Check backend/.env"
+      );
+    }
 
     await mongoose.connect(uri);
 

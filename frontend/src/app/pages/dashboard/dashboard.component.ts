@@ -1,8 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration, Chart } from 'chart.js';
+
+import {
+  ChartConfiguration,
+  Chart
+} from 'chart.js';
+
 import { registerables } from 'chart.js';
 
 import { DashboardService } from '../../core/services/dashboard.service';
@@ -29,9 +35,9 @@ export class DashboardComponent implements OnInit {
 
   error = '';
 
-  // =========================
+  // =========================================================
   // BAR CHART
-  // =========================
+  // =========================================================
 
   barChartData: ChartConfiguration<'bar'>['data'] = {
     labels: [],
@@ -55,9 +61,9 @@ export class DashboardComponent implements OnInit {
     }
   };
 
-  // =========================
+  // =========================================================
   // PIE CHART
-  // =========================
+  // =========================================================
 
   pieChartData: ChartConfiguration<'pie'>['data'] = {
     labels: [],
@@ -70,31 +76,39 @@ export class DashboardComponent implements OnInit {
 
     plugins: {
       legend: {
-        display: true
+        display: true,
+        position: 'bottom'
       }
     }
   };
 
-  // =========================
-  // SPENDING TREND LINE CHART
-  // =========================
+  // =========================================================
+  // LINE CHART - MONTHLY SPENDING TREND
+  // =========================================================
 
   lineChartData: ChartConfiguration<'line'>['data'] = {
     labels: [],
+
     datasets: [
       {
         data: [],
         label: 'Monthly Expenditure',
-        tension: 0.35,
+
         fill: true,
+
+        tension: 0.35,
+
         pointRadius: 4,
+
         pointHoverRadius: 6
       }
     ]
   };
 
   lineChartOptions: ChartConfiguration<'line'>['options'] = {
+
     responsive: true,
+
     maintainAspectRatio: false,
 
     plugins: {
@@ -107,15 +121,28 @@ export class DashboardComponent implements OnInit {
           label: (context) => {
             const value = context.parsed.y ?? 0;
 
-            return ` Expenditure: ₹${value.toLocaleString('en-IN')}`;
+            return ` ₹${value.toLocaleString('en-IN')}`;
           }
         }
       }
     },
 
     scales: {
+
+      x: {
+        title: {
+          display: true,
+          text: 'Month'
+        }
+      },
+
       y: {
         beginAtZero: true,
+
+        title: {
+          display: true,
+          text: 'Expenditure (₹)'
+        },
 
         ticks: {
           callback: (value) => {
@@ -126,13 +153,17 @@ export class DashboardComponent implements OnInit {
     }
   };
 
+  // =========================================================
+  // CONSTRUCTOR
+  // =========================================================
+
   constructor(
     private dashboardService: DashboardService
   ) {}
 
-  // =========================
-  // INITIAL LOAD
-  // =========================
+  // =========================================================
+  // INIT
+  // =========================================================
 
   ngOnInit(): void {
 
@@ -159,27 +190,39 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  // =========================
+  // =========================================================
   // BUILD ALL CHARTS
-  // =========================
+  // =========================================================
 
-  private buildCharts(res: DashboardSummary): void {
+  private buildCharts(
+    res: DashboardSummary
+  ): void {
 
-    // =========================
+    const monthlyTrend = (
+      res as DashboardSummary & {
+        monthlyTrend?: Array<{
+          month: string;
+          totalExpense: number;
+        }>;
+      }
+    ).monthlyTrend ?? [];
+
+    // -------------------------------------------------------
     // BAR CHART
-    // =========================
+    // -------------------------------------------------------
 
     this.barChartData = {
 
       labels: res.departments.map(
-        (d) => d.code
+        (department) => department.code
       ),
 
       datasets: [
 
         {
           data: res.departments.map(
-            (d) => d.totalBudget
+            (department) =>
+              department.totalBudget
           ),
 
           label: 'Allocated'
@@ -187,7 +230,8 @@ export class DashboardComponent implements OnInit {
 
         {
           data: res.departments.map(
-            (d) => d.totalExpense
+            (department) =>
+              department.totalExpense
           ),
 
           label: 'Spent'
@@ -196,49 +240,54 @@ export class DashboardComponent implements OnInit {
       ]
     };
 
-    // =========================
+    // -------------------------------------------------------
     // PIE CHART
-    // =========================
+    // -------------------------------------------------------
 
     this.pieChartData = {
 
       labels: res.categoryBreakdown.map(
-        (c) => c.category
+        (category) =>
+          category.category
       ),
 
       datasets: [
 
         {
           data: res.categoryBreakdown.map(
-            (c) => c.total
+            (category) =>
+              category.total
           )
         }
 
       ]
     };
 
-    // =========================
-    // LINE / TREND CHART
-    // =========================
+    // -------------------------------------------------------
+    // LINE CHART
+    // MONTHLY SPENDING TREND
+    // -------------------------------------------------------
 
     this.lineChartData = {
 
-      labels: res.spendingTrend.map(
-        (item) => item.month
+      labels: monthlyTrend.map(
+        (item) =>
+          item.month
       ),
 
       datasets: [
 
         {
-          data: res.spendingTrend.map(
-            (item) => item.total
+          data: monthlyTrend.map(
+            (item) =>
+              item.totalExpense
           ),
 
           label: 'Monthly Expenditure',
 
-          tension: 0.35,
-
           fill: true,
+
+          tension: 0.35,
 
           pointRadius: 4,
 
@@ -249,11 +298,13 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  // =========================
+  // =========================================================
   // UTILIZATION CLASS
-  // =========================
+  // =========================================================
 
-  utilizationClass(pct: number): string {
+  utilizationClass(
+    pct: number
+  ): string {
 
     if (pct >= 100) {
       return 'danger';
@@ -266,13 +317,14 @@ export class DashboardComponent implements OnInit {
     return '';
   }
 
-  // =========================
+  // =========================================================
   // ALERT SEVERITY CLASS
-  // =========================
+  // =========================================================
 
-  severityClass(sev: string): string {
+  severityClass(
+    sev: string
+  ): string {
 
     return sev.toLowerCase();
   }
-
 }

@@ -736,3 +736,14 @@ tbody tr:hover {
   }
 
 }
+.chart-wrapper {
+  position: relative;
+  height: 320px;
+  width: 100%;
+}
+
+.pie-wrapper {
+  position: relative;
+  height: 320px;
+  width: 100%;
+}
