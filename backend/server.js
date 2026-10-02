@@ -20,7 +20,8 @@ app.use(
       "http://localhost:4200",
       "https://gbms-mean-stack.vercel.app",
       "https://gbms-mean-stack-apcx0huax-pdtech.vercel.app",
-      "https://gbms-mean-stack-git-main-pdtech.vercel.app"
+      "https://gbms-mean-stack-git-main-pdtech.vercel.app",
+      "https://pdubey-tech26.github.io"
     ],
     credentials: true
   })
