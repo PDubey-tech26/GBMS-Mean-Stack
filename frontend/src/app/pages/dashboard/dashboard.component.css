@@ -747,3 +747,174 @@ tbody tr:hover {
   height: 320px;
   width: 100%;
 }
+
+/* =====================================
+   GBMS Dashboard Responsive Layout Fix
+   Keeps existing loading and design intact
+   ===================================== */
+
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+:host *,
+:host *::before,
+:host *::after {
+  box-sizing: border-box;
+}
+
+:host {
+  overflow-wrap: break-word;
+}
+
+.dashboard,
+.dashboard-container,
+.dashboard-content,
+.dashboard-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.dashboard,
+.dashboard-container,
+.dashboard-content {
+  padding-left: clamp(12px, 2vw, 24px);
+  padding-right: clamp(12px, 2vw, 24px);
+}
+
+/* Responsive card and chart grids */
+.stats-grid,
+.stats-cards,
+.dashboard-cards,
+.dashboard-grid,
+.charts-grid,
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat( auto-fit, minmax(min(100%, 240px), 1fr) );
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Prevent cards from overflowing */
+.stat-card,
+.stats-card,
+.dashboard-card,
+.chart-card,
+.card {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Keep charts inside their containers */
+.chart-container,
+.chart-wrapper,
+canvas,
+apx-chart {
+  max-width: 100%;
+}
+
+.chart-container,
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Tables can scroll horizontally on small screens */
+.table-container,
+.table-responsive {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  max-width: 100%;
+  border-collapse: collapse;
+}
+
+/* Laptop and medium screens */
+@media (max-width: 1024px) {
+  .dashboard,
+  .dashboard-container,
+  .dashboard-content,
+  .dashboard-wrapper {
+    min-width: 0;
+  }
+
+  .stats-grid,
+  .stats-cards,
+  .dashboard-cards,
+  .dashboard-grid,
+  .charts-grid,
+  .chart-grid {
+    gap: 14px;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 768px) {
+  .dashboard,
+  .dashboard-container,
+  .dashboard-content,
+  .dashboard-wrapper {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .stats-grid,
+  .stats-cards,
+  .dashboard-cards,
+  .dashboard-grid,
+  .charts-grid,
+  .chart-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .stat-card,
+  .stats-card,
+  .dashboard-card,
+  .chart-card {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .table-container,
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    max-width: 100%;
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  .dashboard,
+  .dashboard-container,
+  .dashboard-content,
+  .dashboard-wrapper {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .stat-card,
+  .stats-card,
+  .dashboard-card,
+  .chart-card,
+  .card {
+    padding: 12px;
+  }
+}
